@@ -2,23 +2,44 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   BaseEntity,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm'
-import { Review } from './Review'
+import { Field, ID, ObjectType } from 'type-graphql'
 import { User } from './User'
+import { Review } from './Review'
 
+@ObjectType()
 @Entity()
 export class Feedback extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number
+  @Field(() => ID)
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
-  @ManyToOne(() => Review, (review: Review) => review.feedbacks)
-  review: Review
+  @Field()
+  @Column()
+  createdAt: number
 
-  @ManyToOne(() => User, (user: User) => user.feedbacks)
-  user: User
-
+  @Field()
   @Column()
   content: string
+
+  @Field()
+  @Column()
+  ownerId: string
+
+  @Field()
+  @ManyToOne(() => User, (user: User) => user.feedbacks)
+  @JoinColumn({ name: 'ownerId' })
+  owner: User
+
+  @Field()
+  @Column()
+  reviewId: string
+
+  @Field()
+  @ManyToOne(() => Review, (review: Review) => review.feedbacks)
+  @JoinColumn({ name: 'reviewId' })
+  review: Review
 }

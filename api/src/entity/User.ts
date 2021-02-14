@@ -4,26 +4,42 @@ import {
   Column,
   OneToMany,
   BaseEntity,
+  ManyToMany,
 } from 'typeorm'
 import { Feedback } from './Feedback'
+import { Field, ID, ObjectType } from 'type-graphql'
+import { Review } from './Review'
 
+@ObjectType()
 @Entity()
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number
+  @Field(() => ID)
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
-  @Column()
+  @Field()
+  @Column({ unique: true })
   name: string
 
+  @Field()
   @Column()
-  hashedPassword: string
+  secret: string
 
+  @Field()
   @Column()
-  createdDate: number
+  createdAt: number
 
-  @Column()
+  @Field()
+  @Column('boolean', { default: false })
   isAdmin: boolean
 
-  @OneToMany(() => Feedback, (feedback: Feedback) => feedback.user)
+  @ManyToMany(() => Review, (reviews: Review) => reviews.assignees, {
+    cascade: true,
+  })
+  @Field(() => [Review])
+  reviews: Review[]
+
+  @Field(() => [Feedback])
+  @OneToMany(() => Feedback, (feedbacks: Feedback) => feedbacks.owner)
   feedbacks: Feedback[]
 }
