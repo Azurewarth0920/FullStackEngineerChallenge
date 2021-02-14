@@ -1,12 +1,36 @@
 <template>
-  <button
-    class="app-button block bg-teal hover:bg-teal-dark text-white uppercase bg-gray-800 text-2xl font-bold mx-auto mt-8 py-4 px-6 rounded"
-  >
-    <slot></slot>
-  </button>
+  <div class="mx-auto text-center">
+    <component
+      :is="tagType"
+      :to="to"
+      class="app-button inline-block bg-teal hover:opacity-75 text-white uppercase bg-gray-800 text-2xl mx-auto mt-8 font-bold py-4 px-6 rounded"
+      @click="emitEvent"
+    >
+      <slot></slot>
+    </component>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-export default Vue.extend({})
+export default Vue.extend({
+  props: {
+    to: {
+      type: String,
+      default: '',
+    },
+  },
+
+  computed: {
+    tagType() {
+      return this.to ? 'nuxt-link' : 'button'
+    },
+  },
+
+  methods: {
+    emitEvent() {
+      this.$emit('click')
+    },
+  },
+})
 </script>

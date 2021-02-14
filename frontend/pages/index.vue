@@ -1,11 +1,35 @@
 <template>
-  <div class="page-index"></div>
+  <div class="page-index">
+    <operative-list title="Reviews">
+      <operative-item
+        v-for="item in reviews"
+        :key="item"
+        is-writable
+        annotation="this is annotation"
+      ></operative-item>
+    </operative-list>
+    <operative-list title="Feedbacks">
+      <operative-item
+        v-for="item in feedbacks"
+        :key="item"
+        is-editable
+        is-disposable
+      ></operative-item>
+    </operative-list>
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
-export default Vue.extend({})
+export default Vue.extend({
+  data() {
+    return {
+      reviews: [1, 2, 3, 4],
+      feedbacks: [1, 2, 3, 4],
+    }
+  },
+})
 </script>
 
 <style lang="scss" scoped>

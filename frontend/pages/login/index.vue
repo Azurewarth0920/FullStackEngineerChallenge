@@ -20,10 +20,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import AppButton from '../../components/AppButton.vue'
 
 export default Vue.extend({
-  components: { AppButton },
+  layout: 'login',
   data() {
     return {
       name: '',
