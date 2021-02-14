@@ -7,6 +7,7 @@ import {
   Field,
   Query,
   ID,
+  Int,
 } from 'type-graphql'
 import { Review } from '../entity/Review'
 
@@ -15,8 +16,8 @@ class ReviewCreate {
   @Field()
   content: string
 
-  @Field(() => [String])
-  userIds: string[]
+  @Field(() => [Number])
+  userIds: number[]
 }
 
 @InputType()
@@ -24,8 +25,8 @@ class ReviewUpdate {
   @Field(() => String, { nullable: true })
   content?: string
 
-  @Field(() => [String], { nullable: true })
-  userIds?: string[]
+  @Field(() => [Number], { nullable: true })
+  userIds?: number[]
 }
 
 interface UpdateType {
@@ -42,14 +43,13 @@ export class ReviewResolver {
 
     return await Review.create({
       ...meta,
-      createdAt: new Date().getTime(),
       assignees,
     }).save()
   }
 
   @Mutation(() => Review)
   async updateReview(
-    @Arg('id', () => ID) id: string,
+    @Arg('id', () => Int) id: number,
     @Arg('option', () => ReviewUpdate) { content, userIds }: ReviewUpdate
   ) {
     const updatedTarget: UpdateType = {}
@@ -62,7 +62,7 @@ export class ReviewResolver {
   }
 
   @Mutation(() => Boolean)
-  async deleteReview(@Arg('id', () => ID) id: string) {
+  async deleteReview(@Arg('id', () => Int) id: number) {
     await Review.delete({ id })
     return true
   }

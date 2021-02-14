@@ -5,24 +5,39 @@ import {
   InputType,
   Field,
   Query,
-  ID,
   Ctx,
+  Int,
 } from 'type-graphql'
 import { User } from '../entity/User'
 import * as jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
+import { AuthenticationError } from 'apollo-server-express'
 require('dotenv').config()
-
-declare module 'express-session' {
-  export interface SessionData {
-    userName: { [key: string]: any }
-  }
-}
 
 export interface Context {
   req: Request
   res: Response
+}
+
+interface DecodedToken {
+  id: number
+  exp: number
+}
+
+const AdminGuard = async (req: Request) => {
+  if (!jwt.verify(req.cookies.id, process.env.JWT_SECRET as string))
+    new AuthenticationError('Login is required.')
+
+  const { id } = jwt.decode(req.cookies.id) as DecodedToken
+
+  const targetUser = await User.findOne({
+    id,
+  })
+
+  if (!targetUser?.isAdmin) {
+    new AuthenticationError('Authorization Request Denied.')
+  }
 }
 
 @InputType()
@@ -57,7 +72,6 @@ export class UserResolver {
 
     return await User.create({
       ...meta,
-      createdAt: new Date().getTime(),
       secret: bcrypt.hashSync(password, 8),
     }).save()
   }
@@ -73,7 +87,7 @@ export class UserResolver {
     if (foundUser && bcrypt.compareSync(password, foundUser.secret)) {
       const token = jwt.sign(
         {
-          userId: name,
+          id: foundUser.id,
         },
         process.env.JWT_SECRET as string,
         { expiresIn: '7d' }
@@ -91,30 +105,41 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   async updateUser(
-    @Arg('id', () => ID) id: string,
-    @Arg('option', () => UserUpdate) option: UserUpdate
+    @Arg('id', () => Int) id: number,
+    @Arg('option', () => UserUpdate) option: UserUpdate,
+    @Ctx() { req }: Context
   ) {
+    await AdminGuard(req)
+
     await User.update({ id }, option)
     return true
   }
 
   @Mutation(() => Boolean)
-  async deleteUser(@Arg('id', () => ID) id: string) {
+  async deleteUser(@Arg('id', () => Int) id: number, @Ctx() { req }: Context) {
+    await AdminGuard(req)
+
     await User.delete({ id })
     return true
   }
 
   @Query(() => User)
-  user(@Arg('id', () => ID) id: string, @Ctx() { req }: Context) {
-    console.log(req)
-    return User.findOne(id, {
+  async user(@Ctx() { req }: Context) {
+    // validate
+    if (!jwt.verify(req.cookies.id, process.env.JWT_SECRET as string))
+      new AuthenticationError('auth error.')
+
+    const { id } = jwt.decode(req.cookies.id) as DecodedToken
+    console.log(id)
+
+    return await User.findOne(id, {
       relations: ['feedbacks', 'reviews'],
     })
   }
 
   @Query(() => [User])
-  users(@Ctx() { req }: Context) {
-    console.log(jwt.verify(req.cookies.id, process.env.JWT_SECRET as string))
+  async users(@Ctx() { req }: Context) {
+    await AdminGuard(req)
 
     return User.find({
       relations: ['feedbacks', 'reviews'],

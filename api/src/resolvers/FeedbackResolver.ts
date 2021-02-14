@@ -5,7 +5,7 @@ import {
   InputType,
   Field,
   Query,
-  ID,
+  Int,
 } from 'type-graphql'
 import { Feedback } from '../entity/Feedback'
 
@@ -15,10 +15,10 @@ class FeedbackCreate {
   content: string
 
   @Field()
-  ownerId: string
+  ownerId: number
 
   @Field()
-  reviewId: string
+  reviewId: number
 }
 
 @InputType()
@@ -33,27 +33,25 @@ export class FeedbackResolver {
   async createFeedback(
     @Arg('option', () => FeedbackCreate) option: FeedbackCreate
   ) {
-    return await Feedback.create({
-      ...option,
-      createdAt: new Date().getTime(),
-    }).save()
+    return await Feedback.create(option).save()
   }
 
   @Mutation(() => Boolean)
   async updateFeedback(
-    @Arg('id', () => ID) id: string,
+    @Arg('id', () => Int) id: number,
     @Arg('content', () => FeedbackUpdate) content: FeedbackUpdate
   ) {
     await Feedback.update({ id }, content)
   }
 
   @Mutation(() => Boolean)
-  async deleteFeedback(@Arg('id', () => ID) id: string) {
+  async deleteFeedback(@Arg('id', () => Int) id: number) {
     await Feedback.delete({ id })
+    return id
   }
 
   @Query(() => Feedback)
-  feedback(@Arg('id', () => ID) id: string) {
+  feedback(@Arg('id', () => Int) id: number) {
     return Feedback.findOne(id, {
       relations: ['owner', 'review'],
     })

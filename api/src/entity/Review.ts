@@ -8,20 +8,16 @@ import {
   JoinTable,
 } from 'typeorm'
 
-import { Field, ID, ObjectType } from 'type-graphql'
+import { Field, Int, ObjectType } from 'type-graphql'
 import { Feedback } from './Feedback'
 import { User } from './User'
 
 @ObjectType()
 @Entity()
 export class Review extends BaseEntity {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn('uuid')
-  id: string
-
-  @Field()
-  @Column()
-  createdAt: number
+  @Field(() => Int)
+  @PrimaryGeneratedColumn()
+  id: number
 
   @Field()
   @Column()
