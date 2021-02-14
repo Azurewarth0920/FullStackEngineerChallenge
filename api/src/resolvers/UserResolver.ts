@@ -6,9 +6,21 @@ import {
   Field,
   Query,
   ID,
+  Ctx,
 } from 'type-graphql'
 import { User } from '../entity/User'
 import bcrypt from 'bcrypt'
+import { Request } from 'express'
+
+declare module 'express-session' {
+  export interface SessionData {
+    userName: { [key: string]: any }
+  }
+}
+
+export interface Context {
+  req: Request
+}
 
 @InputType()
 class UserCreate {
@@ -45,6 +57,17 @@ export class UserResolver {
       createdAt: new Date().getTime(),
       secret: bcrypt.hashSync(password, 8),
     }).save()
+  }
+
+  async login(
+    @Arg('name', () => String) name: String,
+    @Arg('password', () => String) password: String,
+    @Ctx() { req }: Context
+  ) {
+    const foundUser = await User.findOne({ where: { name } })
+    if (foundUser && bcrypt.compareSync(password, foundUser.secret)) {
+      req.session.userName = name
+    }
   }
 
   @Mutation(() => Boolean)

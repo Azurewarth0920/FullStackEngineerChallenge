@@ -6,6 +6,10 @@ import { buildSchema } from 'type-graphql'
 import { FeedbackResolver } from './resolvers/FeedbackResolver'
 import { UserResolver } from './resolvers/UserResolver'
 import { ReviewResolver } from './resolvers/ReviewResolver'
+import { sessionMiddleware } from './middlewares/session'
+
+const PATH = '/graphql'
+
 ;(async () => {
   const PORT = 3100
   const app = express()
@@ -16,10 +20,12 @@ import { ReviewResolver } from './resolvers/ReviewResolver'
     schema: await buildSchema({
       resolvers: [FeedbackResolver, UserResolver, ReviewResolver],
     }),
-    context: ({ req, res }) => ({ req, res }),
+    context: ({ req, res }) => ({ req, res, session: req.session }),
   })
 
-  apolloServer.applyMiddleware({ app, cors: true })
+  app.use(PATH, sessionMiddleware)
+
+  apolloServer.applyMiddleware({ app, cors: true, path: PATH })
 
   app.listen(PORT, () => {
     console.log(`Express server started on ${PORT}`)
