@@ -1,6 +1,6 @@
 <template>
-  <header class="app-header p-2 border-gray-800">
-    <span class="text-3xl font-bold">Hi, User</span>
+  <header class="app-header border-gray-800">
+    <span class="text-4xl font-bold">Hi, User</span>
     <!-- visibility -->
     <nuxt-link class="text-3xl font-bold text-gray-800" to="/admin/"
       >Admin</nuxt-link

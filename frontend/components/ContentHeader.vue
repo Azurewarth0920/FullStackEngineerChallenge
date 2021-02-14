@@ -1,6 +1,6 @@
 <template>
   <div class="content-header">
-    <h2 class="content-header__title text-2xl font-bold my-4"><slot></slot></h2>
+    <h2 class="content-header__title text-3xl font-bold my-4"><slot></slot></h2>
   </div>
 </template>
 

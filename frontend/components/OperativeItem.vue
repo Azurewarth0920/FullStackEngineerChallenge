@@ -8,9 +8,9 @@
         {{ annotation }}
       </p>
     </div>
-    <button v-if="isReadable" class="text-3xl px-2 mx-2" @click="$emit('read')">
+    <nuxt-link v-if="detailPath" class="text-3xl px-2 mx-2" :to="detailPath">
       👁️
-    </button>
+    </nuxt-link>
     <button
       v-if="isWritable"
       class="text-3xl px-2 mx-2"
@@ -48,9 +48,9 @@ export default Vue.extend({
       type: Boolean,
       default: false,
     },
-    isReadable: {
-      type: Boolean,
-      default: false,
+    detailPath: {
+      type: String,
+      default: '',
     },
     annotation: {
       type: String,

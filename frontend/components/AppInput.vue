@@ -45,7 +45,7 @@ export default Vue.extend({
 
   computed: {
     model: {
-      get() {
+      get(): Boolean {
         return this.value
       },
       set(value) {

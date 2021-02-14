@@ -5,10 +5,10 @@
         v-for="item in reviews"
         :key="item"
         is-editable
-        is-readable
+        :detail-path="`/admin/review/${item}`"
       ></operative-item>
       <li>
-        <app-button to="/admin/review/">Add Review</app-button>
+        <app-button to="/admin/post-review/">Add Review</app-button>
       </li>
     </operative-list>
     <operative-list title="Users">
@@ -39,7 +39,7 @@ export default Vue.extend({
   },
 
   methods: {
-    switchAddUser(status: Boolean) {
+    switchAddUser(status: boolean) {
       this.isAddingUser = status
     },
   },
