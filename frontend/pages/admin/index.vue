@@ -26,10 +26,12 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 
 export default Vue.extend({
+  middleware: ['authenticated', 'admin'],
+
   data() {
     return {
       reviews: [1, 2, 3, 4],
@@ -39,7 +41,7 @@ export default Vue.extend({
   },
 
   methods: {
-    switchAddUser(status: boolean) {
+    switchAddUser(status) {
       this.isAddingUser = status
     },
   },

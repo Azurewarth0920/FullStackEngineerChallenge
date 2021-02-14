@@ -2,7 +2,7 @@
   <li class="operative-item py-2">
     <div class="operative-item__wrapper">
       <p class="text-3xl operative-item__content">
-        content content content content content content content content
+        <slot></slot>
       </p>
       <p v-if="annotation" class="operative-item__annotation text-2xl pl-6">
         {{ annotation }}

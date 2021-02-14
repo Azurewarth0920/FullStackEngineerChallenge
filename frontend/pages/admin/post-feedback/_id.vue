@@ -14,9 +14,10 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 export default Vue.extend({
+  middleware: ['authenticated', 'admin'],
   data() {
     return {
       assignnes: [1, 2, 3, 4, 5, 6, 7, 8, 9],

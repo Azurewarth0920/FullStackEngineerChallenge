@@ -1,0 +1,16 @@
+query fetchCurrent {
+  user {
+    name
+    isAdmin
+
+    feedbacks {
+      id
+      content
+      reviewId
+    }
+    reviews {
+      id
+      content
+    }
+  }
+}

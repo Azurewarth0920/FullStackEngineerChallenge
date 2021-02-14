@@ -6,10 +6,10 @@
       method="post"
       @submit.prevent="submit"
     >
-      <app-input name="name" :value="name" label="Name" />
+      <app-input v-model="name" name="name" label="Name" />
       <app-input
+        v-model="password"
         name="password"
-        :value="password"
         label="Password"
         is-password
       />
@@ -18,11 +18,12 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 
 export default Vue.extend({
   layout: 'login',
+  middleware: ['anonymous'],
   data() {
     return {
       name: '',
@@ -31,8 +32,16 @@ export default Vue.extend({
   },
 
   methods: {
-    submit() {
-      console.log('submit')
+    async submit() {
+      try {
+        await this.$store.dispatch('user/login', {
+          name: this.name,
+          password: this.password,
+        })
+        this.$router.push('/')
+      } catch (error) {
+        this.$nuxt.error(error)
+      }
     },
   },
 })

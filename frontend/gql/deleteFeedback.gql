@@ -1,0 +1,3 @@
+mutation deleteFeedback($id: Int!) {
+  deleteFeedback(id: $id)
+}

@@ -17,7 +17,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 
 export default Vue.extend({
@@ -45,7 +45,7 @@ export default Vue.extend({
 
   computed: {
     model: {
-      get(): Boolean {
+      get() {
         return this.value
       },
       set(value) {

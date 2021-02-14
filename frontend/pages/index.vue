@@ -3,64 +3,72 @@
     <operative-list title="Reviews">
       <operative-item
         v-for="item in reviews"
-        :key="item"
+        :key="item.id"
         is-writable
-        annotation="this is annotation"
-      ></operative-item>
+        @write="postFeedback(item.id)"
+        >{{ item.content }}</operative-item
+      >
     </operative-list>
     <operative-list title="Feedbacks">
       <operative-item
         v-for="item in feedbacks"
-        :key="item"
+        :key="item.id"
         is-editable
         is-disposable
-      ></operative-item>
+        :annotation="`Review id is '${item.reviewId}'`"
+        @edit="editFeedBack(item.id, item.reviewId)"
+        @dispose="deleteFeedback(item.id)"
+        >{{ item.content }}</operative-item
+      >
     </operative-list>
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
+import fetchCurrent from '@/gql/fetchCurrent.gql'
+import deleteFeedback from '@/gql/deleteFeedback.gql'
 
 export default Vue.extend({
+  middleware: ['authenticated'],
+  async asyncData({ app }) {
+    const { data } = await app.apolloProvider.defaultClient.query({
+      query: fetchCurrent,
+    })
+
+    return {
+      reviews: data.user.reviews,
+      feedbacks: data.user.feedbacks,
+    }
+  },
+
   data() {
     return {
-      reviews: [1, 2, 3, 4],
-      feedbacks: [1, 2, 3, 4],
+      reviews: [],
+      feedbacks: [],
     }
+  },
+
+  methods: {
+    postFeedback(reviewId) {
+      this.$router.push(`/post-feedback/${reviewId}`)
+    },
+    editFeedBack(feedBackId, reviewId) {
+      this.$router.push(`/post-feedback/${reviewId}?edit=${feedBackId}`)
+    },
+    async deleteFeedback(feedbackId) {
+      try {
+        await this.$apollo.mutate({
+          mutation: deleteFeedback,
+          variables: {
+            id: feedbackId,
+          },
+        })
+        this.feedbacks = this.feedbacks.filter((item) => item.id !== feedbackId)
+      } catch (error) {
+        this.$nuxt.error(error)
+      }
+    },
   },
 })
 </script>
-
-<style lang="scss" scoped>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
-</style>
