@@ -9,8 +9,10 @@ import {
   Ctx,
 } from 'type-graphql'
 import { User } from '../entity/User'
+import * as jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { Request } from 'express'
+import { Request, Response } from 'express'
+require('dotenv').config()
 
 declare module 'express-session' {
   export interface SessionData {
@@ -20,6 +22,7 @@ declare module 'express-session' {
 
 export interface Context {
   req: Request
+  res: Response
 }
 
 @InputType()
@@ -59,15 +62,31 @@ export class UserResolver {
     }).save()
   }
 
+  @Mutation(() => User)
   async login(
     @Arg('name', () => String) name: String,
     @Arg('password', () => String) password: String,
-    @Ctx() { req }: Context
+    @Ctx() { res }: Context
   ) {
     const foundUser = await User.findOne({ where: { name } })
+
     if (foundUser && bcrypt.compareSync(password, foundUser.secret)) {
-      req.session.userName = name
+      const token = jwt.sign(
+        {
+          userId: name,
+        },
+        process.env.JWT_SECRET as string,
+        { expiresIn: '7d' }
+      )
+
+      res.cookie('id', token, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      })
     }
+
+    return foundUser
   }
 
   @Mutation(() => Boolean)
@@ -86,14 +105,17 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  user(@Arg('id', () => ID) id: string) {
+  user(@Arg('id', () => ID) id: string, @Ctx() { req }: Context) {
+    console.log(req)
     return User.findOne(id, {
       relations: ['feedbacks', 'reviews'],
     })
   }
 
   @Query(() => [User])
-  users() {
+  users(@Ctx() { req }: Context) {
+    console.log(jwt.verify(req.cookies.id, process.env.JWT_SECRET as string))
+
     return User.find({
       relations: ['feedbacks', 'reviews'],
     })
