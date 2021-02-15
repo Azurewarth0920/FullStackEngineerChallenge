@@ -1,0 +1,3 @@
+mutation updateFeedback($id: Int!, $content: String!) {
+  updateFeedback(id: $id, content: $content)
+}

@@ -6,7 +6,6 @@ import {
   InputType,
   Field,
   Query,
-  ID,
   Int,
 } from 'type-graphql'
 import { Review } from '../entity/Review'
@@ -68,7 +67,7 @@ export class ReviewResolver {
   }
 
   @Query(() => Review)
-  review(@Arg('id', () => ID) id: string) {
+  review(@Arg('id', () => Int) id: number) {
     return Review.findOne(id, {
       relations: ['assignees', 'feedbacks'],
     })

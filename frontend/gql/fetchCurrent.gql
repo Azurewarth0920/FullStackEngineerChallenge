@@ -2,6 +2,7 @@ query fetchCurrent {
   user {
     name
     isAdmin
+    id
 
     feedbacks {
       id

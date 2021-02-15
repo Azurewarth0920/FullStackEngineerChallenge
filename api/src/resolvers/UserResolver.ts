@@ -130,7 +130,6 @@ export class UserResolver {
       new AuthenticationError('auth error.')
 
     const { id } = jwt.decode(req.cookies.id) as DecodedToken
-    console.log(id)
 
     return await User.findOne(id, {
       relations: ['feedbacks', 'reviews'],

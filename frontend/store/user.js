@@ -4,12 +4,14 @@ import fetchCurrent from '@/gql/fetchCurrent.gql'
 export const state = () => ({
   name: null,
   isAdmin: null,
+  id: null,
 })
 
 export const mutations = {
-  setState(state, { name, isAdmin }) {
+  setState(state, { name, isAdmin, id }) {
     state.name = name
     state.isAdmin = isAdmin
+    state.id = id
   },
 }
 

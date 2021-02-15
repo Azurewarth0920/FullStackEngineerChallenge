@@ -2,10 +2,10 @@
   <div class="page-index">
     <operative-list title="Reviews">
       <operative-item
-        v-for="item in reviews"
+        v-for="item in filteredReviews"
         :key="item.id"
         is-writable
-        @write="postFeedback(item.id)"
+        @write="editFeedBack(item.id)"
         >{{ item.content }}</operative-item
       >
     </operative-list>
@@ -16,7 +16,7 @@
         is-editable
         is-disposable
         :annotation="`Review id is '${item.reviewId}'`"
-        @edit="editFeedBack(item.id, item.reviewId)"
+        @edit="editFeedBack(item.reviewId)"
         @dispose="deleteFeedback(item.id)"
         >{{ item.content }}</operative-item
       >
@@ -31,6 +31,7 @@ import deleteFeedback from '@/gql/deleteFeedback.gql'
 
 export default Vue.extend({
   middleware: ['authenticated'],
+
   async asyncData({ app }) {
     const { data } = await app.apolloProvider.defaultClient.query({
       query: fetchCurrent,
@@ -49,12 +50,16 @@ export default Vue.extend({
     }
   },
 
-  methods: {
-    postFeedback(reviewId) {
-      this.$router.push(`/post-feedback/${reviewId}`)
+  computed: {
+    filteredReviews() {
+      const ownerReview = this.feedbacks.map((item) => item.reviewId)
+      return this.reviews.filter((item) => !ownerReview.includes(item.id))
     },
-    editFeedBack(feedBackId, reviewId) {
-      this.$router.push(`/post-feedback/${reviewId}?edit=${feedBackId}`)
+  },
+
+  methods: {
+    editFeedBack(reviewId) {
+      this.$router.push(`/post-feedback/${reviewId}`)
     },
     async deleteFeedback(feedbackId) {
       try {

@@ -24,7 +24,6 @@ export default Vue.extend({
 
   methods: {
     addUser() {
-      console.log(this.name, this.password)
       this.$emit('dispose')
     },
 

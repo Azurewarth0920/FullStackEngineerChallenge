@@ -21,12 +21,6 @@ class FeedbackCreate {
   reviewId: number
 }
 
-@InputType()
-class FeedbackUpdate {
-  @Field()
-  content: string
-}
-
 @Resolver()
 export class FeedbackResolver {
   @Mutation(() => Feedback)
@@ -39,9 +33,15 @@ export class FeedbackResolver {
   @Mutation(() => Boolean)
   async updateFeedback(
     @Arg('id', () => Int) id: number,
-    @Arg('content', () => FeedbackUpdate) content: FeedbackUpdate
+    @Arg('content', () => String) content: string
   ) {
-    await Feedback.update({ id }, content)
+    await Feedback.update(
+      { id },
+      {
+        content: content,
+      }
+    )
+    return true
   }
 
   @Mutation(() => Boolean)

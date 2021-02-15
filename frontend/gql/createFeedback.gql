@@ -1,0 +1,5 @@
+mutation createFeedback($option: FeedbackCreate!) {
+  createFeedback(option: $option) {
+    id
+  }
+}

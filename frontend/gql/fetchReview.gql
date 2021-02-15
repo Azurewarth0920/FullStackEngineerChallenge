@@ -1,0 +1,11 @@
+query fetchReview($id: Int!) {
+  review(id: $id) {
+    content
+
+    feedbacks {
+      id
+      content
+      ownerId
+    }
+  }
+}
