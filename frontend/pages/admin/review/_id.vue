@@ -16,6 +16,9 @@
           <p class="text-2xl font-bold">{{ feedbackItem.user }} :</p>
           <p class="text-2xl">{{ feedbackItem.content }}</p>
         </li>
+        <li v-if="!feedbacks.length">
+          <empty-notification>Feedback is empty.</empty-notification>
+        </li>
       </ul>
     </section>
 

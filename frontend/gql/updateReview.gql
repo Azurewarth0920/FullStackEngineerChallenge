@@ -1,5 +1,3 @@
 mutation updateReview($id: Int!, $option: ReviewUpdate!) {
-  updateReview(id: $id, option: $option) {
-    id
-  }
+  updateReview(id: $id, option: $option)
 }

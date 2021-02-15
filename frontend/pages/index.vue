@@ -8,6 +8,9 @@
         @write="editFeedBack(item.id)"
         >{{ item.content }}</operative-item
       >
+      <li v-if="!filteredReviews.length">
+        <empty-notification>Reviews is empty.</empty-notification>
+      </li>
     </operative-list>
     <operative-list title="Feedbacks">
       <operative-item
@@ -20,6 +23,9 @@
         @dispose="deleteFeedback(item.id)"
         >{{ item.content }}</operative-item
       >
+      <li v-if="!feedbacks.length">
+        <empty-notification>Feedbacks is empty.</empty-notification>
+      </li>
     </operative-list>
   </div>
 </template>

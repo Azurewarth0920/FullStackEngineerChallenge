@@ -48,13 +48,14 @@ export class ReviewResolver {
     @Arg('option', () => ReviewUpdate) { content, userIds }: ReviewUpdate
   ) {
     const assignees = await User.getRepository().findByIds(userIds)
-    await Review.update(
-      { id },
-      {
-        content,
-        assignees,
-      }
-    )
+
+    const foundReview = await Review.findOne({ id })
+    if (foundReview) {
+      foundReview.content = content
+      foundReview.assignees = assignees
+      await Review.save(foundReview)
+    }
+
     return true
   }
 

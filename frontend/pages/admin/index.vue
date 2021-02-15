@@ -5,10 +5,20 @@
         v-for="item in reviews"
         :key="item.id"
         is-editable
+        is-disposable
         :detail-path="`/admin/review/${item.id}`"
+        :annotation="`${
+          item.feedbacks.length
+            ? `${item.feedbacks.length} feedback on this review`
+            : ''
+        }`"
         @edit="editReview(item.id)"
+        @dispose="deleteReview(item.id)"
         >{{ item.content }}</operative-item
       >
+      <li v-if="!reviews.length">
+        <empty-notification>Review is empty.</empty-notification>
+      </li>
       <li>
         <app-button to="/admin/post-review/">Add Review</app-button>
       </li>
@@ -20,6 +30,7 @@
           is-editable
           is-disposable
           @edit="setEdit(key, true)"
+          @dispose="deleteUser(item.id)"
           >{{ item.name }}</operative-item
         ><add-user-input
           v-else
@@ -42,6 +53,8 @@
 <script>
 import Vue from 'vue'
 import fetchAll from '@/gql/fetchAll.gql'
+import deleteReview from '@/gql/deleteReview.gql'
+import deleteUser from '@/gql/deleteUser.gql'
 
 export default Vue.extend({
   middleware: ['authenticated', 'admin'],
@@ -77,8 +90,51 @@ export default Vue.extend({
     setEdit(key, status) {
       this.users[key].isEditing = status
     },
-    changeUser(event) {
-      console.log(event)
+
+    async deleteReview(reviewId) {
+      try {
+        await this.$apollo.mutate({
+          mutation: deleteReview,
+          variables: {
+            id: reviewId,
+          },
+        })
+
+        this.reviews = this.reviews.filter((item) => item.id !== reviewId)
+      } catch (error) {
+        this.$nuxt.error(error)
+      }
+    },
+
+    async deleteUser(userId) {
+      try {
+        await this.$apollo.mutate({
+          mutation: deleteUser,
+          variables: {
+            id: userId,
+          },
+        })
+
+        this.users = this.users.filter((item) => item.id !== userId)
+      } catch (error) {
+        this.$nuxt.error(error)
+      }
+    },
+
+    changeUser({ isNew, id, isAdmin, name }) {
+      if (isNew) {
+        this.users.push({
+          isAdmin,
+          name,
+          id,
+          isEditing: false,
+        })
+      } else {
+        const targetUser = this.users.find((item) => item.id === id)
+        targetUser.isAdmin = isAdmin
+        targetUser.name = name
+        targetUser.isEditing = false
+      }
     },
   },
 })

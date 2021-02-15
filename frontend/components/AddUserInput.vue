@@ -71,13 +71,19 @@ export default Vue.extend({
   methods: {
     async modifyUser() {
       try {
-        await this.$apollo.mutate({
+        const { data } = await this.$apollo.mutate({
           mutation: this.mutation,
           variables: {
             ...this.mutationPayload,
           },
         })
-        this.$emit('dispose')
+
+        this.$emit('success', {
+          isNew: this.userId == null,
+          name: this.name,
+          isAdmin: this.isAdmin,
+          id: this.userId == null ? data.createUser.id : this.userId,
+        })
       } catch (error) {
         this.$nuxt.error(error)
       }

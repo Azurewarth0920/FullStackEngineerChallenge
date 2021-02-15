@@ -8,7 +8,11 @@
         {{ annotation }}
       </p>
     </div>
-    <nuxt-link v-if="detailPath" class="text-3xl px-2 mx-2" :to="detailPath">
+    <nuxt-link
+      v-if="detailPath"
+      class="text-3xl px-2 mx-2 flex items-center"
+      :to="detailPath"
+    >
       👁️
     </nuxt-link>
     <button
