@@ -28,11 +28,6 @@ class ReviewUpdate {
   userIds: number[]
 }
 
-interface UpdateType {
-  content?: string
-  assignees?: User[]
-}
-
 @Resolver()
 export class ReviewResolver {
   @Mutation(() => Review)
@@ -47,21 +42,20 @@ export class ReviewResolver {
     }).save()
   }
 
-  @Mutation(() => Review)
+  @Mutation(() => Boolean)
   async updateReview(
     @Arg('id', () => Int) id: number,
     @Arg('option', () => ReviewUpdate) { content, userIds }: ReviewUpdate
   ) {
-    const updatedTarget: UpdateType = {}
     const assignees = await User.getRepository().findByIds(userIds)
-    console.log(updatedTarget)
-    return await Review.update(
+    await Review.update(
       { id },
       {
         content,
         assignees,
       }
     )
+    return true
   }
 
   @Mutation(() => Boolean)

@@ -1,9 +1,9 @@
 <template>
   <div class="app-input text-3xl">
-    <div class="flex flex-col mb-4">
+    <div class="flex flex-col">
       <label
         v-if="label"
-        class="mb-2 font-bold text-3xl text-orange-500"
+        class="my-2 font-bold text-3xl text-orange-500"
         :for="`app-input-${name}`"
         >{{ label }}</label
       >
@@ -13,6 +13,7 @@
         :name="name"
         class="border py-2 px-3 text-grey-darkest"
         :type="isPassword ? 'password' : 'text'"
+        :placeholder="placeholder"
       />
     </div>
   </div>
@@ -41,6 +42,10 @@ export default Vue.extend({
     isPassword: {
       type: Boolean,
       default: false,
+    },
+    placeholder: {
+      type: String,
+      default: '',
     },
   },
 

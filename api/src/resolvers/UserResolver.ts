@@ -54,10 +54,10 @@ class UserCreate {
 
 @InputType()
 class UserUpdate {
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   name?: string
 
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   password?: string
 
   @Field(() => Boolean, { nullable: true })
@@ -111,7 +111,15 @@ export class UserResolver {
   ) {
     await AdminGuard(req)
 
-    await User.update({ id }, option)
+    const { password, ...meta } = option
+
+    await User.update(
+      { id },
+      {
+        ...meta,
+        secret: bcrypt.hashSync(password, 8),
+      }
+    )
     return true
   }
 

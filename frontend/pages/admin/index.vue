@@ -14,13 +14,23 @@
       </li>
     </operative-list>
     <operative-list title="Users">
-      <operative-item
-        v-for="item in users"
-        :key="item.id"
-        is-editable
-        is-disposable
-        >{{ item.name }}</operative-item
-      >
+      <div v-for="(item, key) in users" :key="item.id">
+        <operative-item
+          v-if="!item.isEditing"
+          is-editable
+          is-disposable
+          @edit="setEdit(key, true)"
+          >{{ item.name }}</operative-item
+        ><add-user-input
+          v-else
+          :user-id="item.id"
+          :admin-from-parent="item.isAdmin"
+          :name-from-parent="item.name"
+          @dispose="setEdit(key, false)"
+          @success="changeUser"
+        />
+      </div>
+
       <add-user-input v-if="isAddingUser" @dispose="switchAddUser(false)" />
       <li>
         <app-button @click="switchAddUser(true)">Add User</app-button>
@@ -64,8 +74,11 @@ export default Vue.extend({
       this.$router.push(`/admin/post-review/${reviewId}`)
     },
 
-    editUser(userId) {
-      console.log(userId)
+    setEdit(key, status) {
+      this.users[key].isEditing = status
+    },
+    changeUser(event) {
+      console.log(event)
     },
   },
 })
