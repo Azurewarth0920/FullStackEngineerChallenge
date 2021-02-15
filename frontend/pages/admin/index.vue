@@ -105,7 +105,7 @@ export default Vue.extend({
         })
 
         this.reviews = this.reviews.filter((item) => item.id !== reviewId)
-      } catch (error) {
+      } catch {
         this.$toast.show('Fail on deleting review.', {
           type: 'error',
           duration: 2000,

@@ -64,6 +64,7 @@ class UserUpdate {
   isAdmin?: boolean
 }
 
+const SALT = 8
 @Resolver()
 export class UserResolver {
   @Mutation(() => User)
@@ -72,7 +73,7 @@ export class UserResolver {
 
     return await User.create({
       ...meta,
-      secret: bcrypt.hashSync(password, 8),
+      secret: bcrypt.hashSync(password, SALT),
     }).save()
   }
 
@@ -117,7 +118,7 @@ export class UserResolver {
       { id },
       {
         ...meta,
-        secret: bcrypt.hashSync(password, 8),
+        secret: bcrypt.hashSync(password, SALT),
       }
     )
     return true
