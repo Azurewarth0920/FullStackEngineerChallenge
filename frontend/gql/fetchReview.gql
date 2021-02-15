@@ -7,5 +7,10 @@ query fetchReview($id: Int!) {
       content
       ownerId
     }
+
+    assignees {
+      id
+      name
+    }
   }
 }

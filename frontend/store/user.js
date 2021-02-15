@@ -13,6 +13,10 @@ export const mutations = {
     state.isAdmin = isAdmin
     state.id = id
   },
+
+  resetState(oldState) {
+    Object.assign(oldState, state())
+  },
 }
 
 export const getters = {

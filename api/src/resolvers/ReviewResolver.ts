@@ -12,7 +12,7 @@ import { Review } from '../entity/Review'
 
 @InputType()
 class ReviewCreate {
-  @Field()
+  @Field(() => String)
   content: string
 
   @Field(() => [Number])
@@ -21,11 +21,11 @@ class ReviewCreate {
 
 @InputType()
 class ReviewUpdate {
-  @Field(() => String, { nullable: true })
-  content?: string
+  @Field(() => String)
+  content: string
 
-  @Field(() => [Number], { nullable: true })
-  userIds?: number[]
+  @Field(() => [Number])
+  userIds: number[]
 }
 
 interface UpdateType {
@@ -36,12 +36,13 @@ interface UpdateType {
 @Resolver()
 export class ReviewResolver {
   @Mutation(() => Review)
-  async createReview(@Arg('option', () => ReviewCreate) option: ReviewCreate) {
-    const { userIds, ...meta } = option
+  async createReview(
+    @Arg('option', () => ReviewCreate) { content, userIds }: ReviewCreate
+  ) {
     const assignees = await User.getRepository().findByIds(userIds)
 
     return await Review.create({
-      ...meta,
+      content,
       assignees,
     }).save()
   }
@@ -52,12 +53,15 @@ export class ReviewResolver {
     @Arg('option', () => ReviewUpdate) { content, userIds }: ReviewUpdate
   ) {
     const updatedTarget: UpdateType = {}
-    if (content) updatedTarget.content = content
-    if (userIds) {
-      updatedTarget.assignees = await User.getRepository().findByIds(userIds)
-    }
-
-    return await Review.update({ id }, updatedTarget)
+    const assignees = await User.getRepository().findByIds(userIds)
+    console.log(updatedTarget)
+    return await Review.update(
+      { id },
+      {
+        content,
+        assignees,
+      }
+    )
   }
 
   @Mutation(() => Boolean)

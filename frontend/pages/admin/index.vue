@@ -3,10 +3,12 @@
     <operative-list title="Reviews">
       <operative-item
         v-for="item in reviews"
-        :key="item"
+        :key="item.id"
         is-editable
-        :detail-path="`/admin/review/${item}`"
-      ></operative-item>
+        :detail-path="`/admin/review/${item.id}`"
+        @edit="editReview(item.id)"
+        >{{ item.content }}</operative-item
+      >
       <li>
         <app-button to="/admin/post-review/">Add Review</app-button>
       </li>
@@ -14,10 +16,11 @@
     <operative-list title="Users">
       <operative-item
         v-for="item in users"
-        :key="item"
+        :key="item.id"
         is-editable
         is-disposable
-      ></operative-item>
+        >{{ item.name }}</operative-item
+      >
       <add-user-input v-if="isAddingUser" @dispose="switchAddUser(false)" />
       <li>
         <app-button @click="switchAddUser(true)">Add User</app-button>
@@ -28,14 +31,26 @@
 
 <script>
 import Vue from 'vue'
+import fetchAll from '@/gql/fetchAll.gql'
 
 export default Vue.extend({
   middleware: ['authenticated', 'admin'],
 
+  async asyncData({ app }) {
+    const { data } = await app.apolloProvider.defaultClient.query({
+      query: fetchAll,
+    })
+
+    return {
+      users: data.users.map((item) => ({ ...item, isEditing: false })),
+      reviews: data.reviews,
+    }
+  },
+
   data() {
     return {
-      reviews: [1, 2, 3, 4],
-      users: [1, 2, 3, 4],
+      reviews: [],
+      users: [],
       isAddingUser: false,
     }
   },
@@ -43,6 +58,14 @@ export default Vue.extend({
   methods: {
     switchAddUser(status) {
       this.isAddingUser = status
+    },
+
+    editReview(reviewId) {
+      this.$router.push(`/admin/post-review/${reviewId}`)
+    },
+
+    editUser(userId) {
+      console.log(userId)
     },
   },
 })

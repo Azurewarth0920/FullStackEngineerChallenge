@@ -1,10 +1,10 @@
 <template>
   <div class="add-user-input flex items-center">
-    <app-input v-model="name" class="mr-2" name="name" label="Name" />
+    <app-input v-model="name" class="mr-2" name="name" placeholder="Name" />
     <app-input
       v-model="password"
       name="password"
-      label="Password"
+      placeholder="Password"
       is-password
     />
     <button class="text-3xl px-2 mx-2 mb-8" @click="addUser">✔️</button>

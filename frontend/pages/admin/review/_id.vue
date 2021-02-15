@@ -25,35 +25,38 @@
 
 <script>
 import Vue from 'vue'
+import fetchReview from '@/gql/fetchReview.gql'
 
 export default Vue.extend({
   middleware: ['authenticated', 'admin'],
+
+  async asyncData({ app, route }) {
+    const reviewId = route.params.id
+
+    const { data } = await app.apolloProvider.defaultClient.query({
+      query: fetchReview,
+      variables: {
+        id: Number(reviewId),
+      },
+    })
+
+    const assigneesTable = data.review.assignees.reduce((acc, cur) => {
+      acc[cur.id] = cur.name
+      return acc
+    }, {})
+
+    return {
+      content: data.review.content,
+      feedbacks: data.review.feedbacks.map((item) => ({
+        content: item.content,
+        user: assigneesTable[item.ownerId],
+      })),
+    }
+  },
   data() {
     return {
-      content:
-        'content content content content content content content content content',
-      feedbacks: [
-        {
-          user: 'a-user',
-          content: 'feeback feeback feeback feeback feeback',
-        },
-        {
-          user: 'b-user',
-          content: 'feeback feeback feeback feeback feeback',
-        },
-        {
-          user: 'c-user',
-          content: 'feeback feeback feeback feeback feeback',
-        },
-        {
-          user: 'd-user',
-          content: 'feeback feeback feeback feeback feeback',
-        },
-        {
-          user: 'e-user',
-          content: 'feeback feeback feeback feeback feeback',
-        },
-      ],
+      content: '',
+      feedbacks: [],
     }
   },
 })

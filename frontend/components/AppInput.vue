@@ -2,6 +2,7 @@
   <div class="app-input text-3xl">
     <div class="flex flex-col mb-4">
       <label
+        v-if="label"
         class="mb-2 font-bold text-3xl text-orange-500"
         :for="`app-input-${name}`"
         >{{ label }}</label
@@ -34,7 +35,7 @@ export default Vue.extend({
 
     label: {
       type: String,
-      required: true,
+      default: '',
     },
 
     isPassword: {

@@ -38,7 +38,7 @@ export class FeedbackResolver {
     await Feedback.update(
       { id },
       {
-        content: content,
+        content,
       }
     )
     return true
