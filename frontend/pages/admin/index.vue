@@ -42,7 +42,11 @@
         />
       </div>
 
-      <add-user-input v-if="isAddingUser" @dispose="switchAddUser(false)" />
+      <add-user-input
+        v-if="isAddingUser"
+        @success="changeUser"
+        @dispose="switchAddUser(false)"
+      />
       <li>
         <app-button @click="switchAddUser(true)">Add User</app-button>
       </li>
@@ -102,7 +106,11 @@ export default Vue.extend({
 
         this.reviews = this.reviews.filter((item) => item.id !== reviewId)
       } catch (error) {
-        this.$nuxt.error(error)
+        this.$toast.show('Fail on deleting review.', {
+          type: 'error',
+          duration: 2000,
+          position: 'top-center',
+        })
       }
     },
 
@@ -117,7 +125,11 @@ export default Vue.extend({
 
         this.users = this.users.filter((item) => item.id !== userId)
       } catch (error) {
-        this.$nuxt.error(error)
+        this.$toast.show('Fail on deleting user.', {
+          type: 'error',
+          duration: 2000,
+          position: 'top-center',
+        })
       }
     },
 
@@ -129,6 +141,8 @@ export default Vue.extend({
           id,
           isEditing: false,
         })
+
+        this.isAddingUser = false
       } else {
         const targetUser = this.users.find((item) => item.id === id)
         targetUser.isAdmin = isAdmin

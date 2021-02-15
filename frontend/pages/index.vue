@@ -77,7 +77,11 @@ export default Vue.extend({
         })
         this.feedbacks = this.feedbacks.filter((item) => item.id !== feedbackId)
       } catch (error) {
-        this.$nuxt.error(error)
+        this.$toast.show('Fail on deleting feedback.', {
+          type: 'error',
+          duration: 2000,
+          position: 'top-center',
+        })
       }
     },
   },

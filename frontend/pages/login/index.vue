@@ -40,7 +40,11 @@ export default Vue.extend({
         })
         this.$router.push('/')
       } catch (error) {
-        this.$nuxt.error(error)
+        this.$toast.show('Invalid user name or password.', {
+          type: 'error',
+          duration: 2000,
+          position: 'top-center',
+        })
       }
     },
   },
@@ -53,7 +57,7 @@ export default Vue.extend({
   place-items: center;
 
   &_form {
-    background: linear-gradient(-110deg, #176473, #11887f);
+    background: linear-gradient(-135deg, #1ea5c1, #90ded8);
   }
 }
 </style>

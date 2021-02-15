@@ -10,9 +10,9 @@ import { ReviewResolver } from './resolvers/ReviewResolver'
 import cookieParser from 'cookie-parser'
 
 const PATH = '/'
+const PORT = 3100
 
 ;(async () => {
-  const PORT = 3100
   const app = express()
 
   await createConnection()
