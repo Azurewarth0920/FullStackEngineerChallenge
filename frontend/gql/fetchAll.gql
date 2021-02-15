@@ -1,0 +1,15 @@
+query fetchAll {
+  users {
+    id
+    name
+    isAdmin
+  }
+
+  reviews {
+    id
+    content
+    feedbacks {
+      id
+    }
+  }
+}

@@ -1,0 +1,5 @@
+mutation createReview($option: ReviewCreate!) {
+  createReview(option: $option) {
+    id
+  }
+}
