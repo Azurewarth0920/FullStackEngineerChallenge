@@ -105,7 +105,11 @@ export default Vue.extend({
 
         this.$router.push('/admin/')
       } catch (error) {
-        this.$nuxt.error(error)
+        this.$toast.show('Fail on posting review.', {
+          type: 'error',
+          duration: 2000,
+          position: 'top-center',
+        })
       }
     },
   },

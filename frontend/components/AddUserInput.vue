@@ -85,7 +85,11 @@ export default Vue.extend({
           id: this.userId == null ? data.createUser.id : this.userId,
         })
       } catch (error) {
-        this.$nuxt.error(error)
+        this.$toast.show('Fail on modifying user.', {
+          type: 'error',
+          duration: 2000,
+          position: 'top-center',
+        })
       }
     },
 
