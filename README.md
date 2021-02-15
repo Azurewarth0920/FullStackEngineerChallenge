@@ -12,7 +12,7 @@
 
 The sql file itself is committed instead of using seed.
 
-Login with `admin:admin`
+Browse `localhost:3000` and then Login with `admin:admin`.
 
 ## Teck Stack
 

@@ -20,7 +20,7 @@ export class Review extends BaseEntity {
   id: number
 
   @Field()
-  @Column()
+  @Column('text')
   content: string
 
   @ManyToMany(() => User, (user: User) => user.reviews)

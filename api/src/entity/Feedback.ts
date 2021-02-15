@@ -18,7 +18,7 @@ export class Feedback extends BaseEntity {
   id: number
 
   @Field()
-  @Column()
+  @Column('text')
   content: string
 
   @Field(() => Int)
